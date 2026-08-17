@@ -88,7 +88,7 @@ def get_stats():
 async def check_sub(user_id):
     channel = get_setting('channel_id')
     if not channel:
-        return True # Kanal ulanmagan bo'lsa o'tkazaveradi
+        return True 
     try:
         member = await bot.get_chat_member(chat_id=channel, user_id=user_id)
         return member.status in ['member', 'creator', 'administrator', 'restricted']
@@ -106,7 +106,7 @@ async def cmd_start(message: types.Message):
     if args and args.isdigit() and int(args) != user_id:
         update_balance(int(args))
         try:
-            await bot.send_message(int(args), f"🎉 Yangi do'stingiz to'liq obuna bo'ldi! Hisobingizga {BONUS_AMOUNT} so'm qo'shildi.")
+            await bot.send_message(int(args), f"🎉 Yangi do'stingiz qo'shildi! Hisobingizga {BONUS_AMOUNT} so'm qo'shildi.")
         except:
             pass
 
@@ -148,13 +148,16 @@ async def earn_money(message: types.Message):
 
 @dp.message_handler(text='👤 Profil')
 async def profile(message: types.Message):
-    user_data = get_user(message.from_user.id)
+    user_id = message.from_user.id
+    user_data = get_user(user_id)
     if user_data:
         balance, referrals = user_data[0], user_data[1]
         await message.answer(
             f"👤 **Sizning profilingiz:**\n\n"
+            f"🆔 ID raqamingiz: `{user_id}`\n"
             f"💳 Balansingiz: {balance} so'm\n"
-            f"👥 Taklif qilganlaringiz: {referrals} ta"
+            f"👥 Taklif qilganlaringiz: {referrals} ta",
+            parse_mode="Markdown"
         )
 
 # --- ADMIN PANEL ---
